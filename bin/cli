@@ -1,0 +1,62 @@
+class UI
+  
+  def initialize
+    @user = retrieve_user(get_email)
+    run
+  end
+  
+  def run
+    choice = get_choice
+    begin
+      if choice == '0'
+        create_shortened_url(get_url)
+      elsif choice == '1'
+        retrieve_shortened_url(get_url)
+      else
+        print 'invalid input'
+      end
+    end until choice == '1' || choice == '0'
+  end
+  
+  def get_email
+    puts "Whats yo email?"
+    gets.chomp
+  end
+  
+  def get_choice
+    puts "What do you want to do?"
+    puts "0. Create shortened URL"
+    puts "1. Visit shortened URL"
+    gets.chomp
+  end
+  
+  def get_url
+    puts "Type in the URL"
+    gets.chomp
+  end
+  
+  def retrieve_user(email)
+    User.where('email = ?', email)
+  end
+  
+  def create_shortened_url(long_url)
+    ShortenedUrl.create_for_user_and_long_url!(@user.id, long_url)
+    puts "Short url is: #{ShortenedUrl.last.short_url}"
+  end
+  
+  def visit_shortened_url(url)
+    shortened_url_obj = ShortenedUrl.where('short_url = ?', url)
+    Visit.record_visit(@user.id, shortened_url_obj.id)
+  end
+end
+
+ui = UI.new
+
+
+  
+
+  
+  
+  
+  
+    
